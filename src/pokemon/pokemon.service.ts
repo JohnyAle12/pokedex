@@ -66,8 +66,17 @@ export class PokemonService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} pokemon`;
+  async remove(term: string) {
+    // const pokemon = await this.findOne(term)
+    // await pokemon.deleteOne()
+
+    // we make sure for this option because with the new pipe we are secure to recive a term as a mongoId
+    // Another reason is that we need make only one query to database
+    // another option const pokemon = await this.pokemonModel.findByIdAndDelete(term)
+    const { deletedCount } = await this.pokemonModel.deleteOne({_id: term})
+    if(deletedCount === 0){
+      throw new BadRequestException(`Not found pokemon with id ${term}`)
+    }
   }
 
   private handleExceptions(error: any){
