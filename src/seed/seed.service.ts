@@ -4,6 +4,7 @@ import { PokemonResponse } from './interfaces/PokemonResponse.interface';
 import { InjectModel } from '@nestjs/mongoose';
 import { Pokemon } from 'src/pokemon/entities/pokemon.entity';
 import { Model } from 'mongoose';
+import { PokemonI } from './interfaces/Pokemon.interface';
 
 @Injectable()
 export class SeedService {
@@ -15,17 +16,26 @@ export class SeedService {
   ){}
 
   async execute() {
-    const {data} = await this.axios.get<PokemonResponse>('https://pokeapi.co/api/v2/pokemon?limit=3')
+    this.resetCollection()
+
+    const pokemons: PokemonI[] = []
+    const {data} = await this.axios.get<PokemonResponse>('https://pokeapi.co/api/v2/pokemon?limit=650')
     data.results.forEach(async({name, url}) => {
       const segments = url.split('/');
       const pokemonNumber: number = +segments[segments.length - 2];
-      const pokemon = {
+      pokemons.push({
         name,
         number: pokemonNumber
-      }
-      await this.pokemonModel.create(pokemon)
+      })
     })
 
+    await this.pokemonModel.insertMany(pokemons)
+    
     return 'Seed executed';
+  }
+
+  private async resetCollection(): Promise<void>
+  {
+    await this.pokemonModel.deleteMany({})
   }
 }

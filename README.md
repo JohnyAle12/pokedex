@@ -49,3 +49,10 @@ $ npm run test:cov
 # run mongo image docker
 $ docker-compose up -d
 ```
+
+## Build database seed
+
+```bash
+# run build database seed
+GET: http://localhost:3000/api/v2/seed
+```
