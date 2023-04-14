@@ -14,7 +14,12 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
-      forbidNonWhitelisted: true
+      forbidNonWhitelisted: true,
+      // allow that nest transform our params implicitly so i we have a '10' param nest parse to 10 number
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: true
+      }
     })
   )
 
