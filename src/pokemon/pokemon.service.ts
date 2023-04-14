@@ -27,7 +27,8 @@ export class PokemonService {
   async findAll(paginationDto: PaginationDto) {
     const {limit = 10, offset = 0} = paginationDto
     return await this.pokemonModel.find()
-      .select('-__v')
+      // .select('-_id name number')
+      .select({ _id: 1, name: 1, number: 1 })
       .limit(limit)
       .skip(offset)
       .sort({
